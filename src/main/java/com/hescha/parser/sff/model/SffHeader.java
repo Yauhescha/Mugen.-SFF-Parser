@@ -13,6 +13,6 @@ public class SffHeader {
     private int offsetFirstSubfile;
     private int subheaderSite;
     // (1=SPRPALTYPE_SHARED or 0=SPRPALTYPE_INDIV)
-    private int palleteType;
+    private int paletteType;
     private String comment;
 }

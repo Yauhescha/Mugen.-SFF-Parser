@@ -1,10 +1,20 @@
 package com.hescha.parser.wrapper;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 
 public class ReverseByteWrapper {
-    public static int getInt(byte[] array) {
-        return ByteBuffer.wrap(reverseArray(array)).getInt();
+    public static int readShort(RandomAccessFile file) throws IOException {
+        byte[] sizeOfSubheaderInBytes = new byte[2];
+        file.read(sizeOfSubheaderInBytes);
+        return ByteBuffer.wrap(reverseArray(sizeOfSubheaderInBytes)).getShort();
+    }
+
+    public static int readInt(RandomAccessFile file) throws IOException {
+        byte[] sizeOfSubheaderInBytes = new byte[4];
+        file.read(sizeOfSubheaderInBytes);
+        return ByteBuffer.wrap(reverseArray(sizeOfSubheaderInBytes)).getInt();
     }
 
     private static byte[] reverseArray(byte[] a) {
@@ -13,4 +23,5 @@ public class ReverseByteWrapper {
             ret[i] = a[j];
         return ret;
     }
+
 }
