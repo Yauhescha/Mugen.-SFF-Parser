@@ -51,7 +51,8 @@ public class Main {
         new Thread(() -> {
             while (true) {
                 for (int i = 0; i < subfiles.size(); i++) {
-                    byte[] pcxGraphicData = subfiles.get(i).getPcxGraphicData();
+                    byte[] pcxGraphicData = subfiles.get(i).getFullGraphicData();
+                    if(subfiles.get(i).getPcxPalette()==null)continue;
                     try {
                         BufferedImage bufferedImage = imageParser.getBufferedImage(pcxGraphicData, null);
 

@@ -1,5 +1,6 @@
 package com.hescha.parser.sff.model;
 
+import com.google.common.primitives.Bytes;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,4 +17,13 @@ public class SffItem {
     private boolean paletteAsPrevious;
     private String comment;
     private byte[] pcxGraphicData;
+    private byte[] pcxPalette;
+
+    public byte[] getFullGraphicData() {
+        if (paletteAsPrevious) {
+            return Bytes.concat(pcxGraphicData, pcxPalette);
+        } else {
+            return pcxGraphicData;
+        }
+    }
 }

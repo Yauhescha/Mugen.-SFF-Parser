@@ -6,7 +6,9 @@ import com.hescha.parser.sff.model.SffItem;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
@@ -37,6 +39,12 @@ This is the actual
 public class SFFSubfileParser {
     private int subfileOffsetStartpoint = 512;
 
+    public static byte[] combineArray(final byte[] array1, byte[] array2) {
+        byte[] joinedArray = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
+        return joinedArray;
+    }
+
     public List<SffItem> parse(SffHeader header, File file) throws IOException {
         subfileOffsetStartpoint = header.getOffsetFirstSubfile();
 
@@ -46,6 +54,7 @@ public class SFFSubfileParser {
 
         do {
             sffItem = parseSubfile(accessFile);
+            checkPalette(sffItem, list);
             list.add(sffItem);
             subfileOffsetStartpoint = sffItem.getNextSubfileOffset();
             accessFile.seek(subfileOffsetStartpoint);
@@ -53,6 +62,19 @@ public class SFFSubfileParser {
         accessFile.close();
         System.out.println("List size: " + list.size());
         return list;
+    }
+
+    private void checkPalette(SffItem sffItem, List<SffItem> list) {
+        if(sffItem.isPaletteAsPrevious()){
+            SffItem last = list.get(list.size() - 1);
+            sffItem.setPcxPalette(last.getPcxPalette());
+        }
+        else{
+            byte[] graphicData = sffItem.getPcxGraphicData();
+            if(graphicData.length==0) return;
+            byte[] palette = Arrays.copyOfRange(graphicData, graphicData.length-768, graphicData.length);
+            sffItem.setPcxPalette(palette);
+        }
     }
 
     private SffItem parseSubfile(RandomAccessFile accessFile) throws IOException {
@@ -136,6 +158,7 @@ public class SFFSubfileParser {
         file.seek(subfileOffsetStartpoint + 32);
         byte[] pcxData = new byte[subfileLength];
         file.read(pcxData);
+
         return pcxData;
     }
 }
