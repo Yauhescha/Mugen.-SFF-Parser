@@ -6,6 +6,7 @@ import com.hescha.parser.sff.model.SffItem;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
@@ -37,11 +38,24 @@ public class SFFSubfileParser {
     private int subfileOffsetStartpoint = 512;
 
     public List<SffItem> parse(SffHeader header, File file) throws IOException {
-        RandomAccessFile accessFile = new RandomAccessFile(file, "r");
-
         subfileOffsetStartpoint = header.getOffsetFirstSubfile();
 
+        RandomAccessFile accessFile = new RandomAccessFile(file, "r");
+        SffItem sffItem;
+        List<SffItem> list = new ArrayList<>();
 
+        do {
+            sffItem = parseSubfile(accessFile);
+            list.add(sffItem);
+            subfileOffsetStartpoint = sffItem.getNextSubfileOffset();
+            accessFile.seek(subfileOffsetStartpoint);
+        } while (accessFile.length() != subfileOffsetStartpoint);
+        accessFile.close();
+        System.out.println("List size: " + list.size());
+        return list;
+    }
+
+    private SffItem parseSubfile(RandomAccessFile accessFile) throws IOException {
         int nextSubfileOffset = readNextSubfileOffset(accessFile);
         int subfileLength = readSubfileLength(accessFile); //without header
         int imageAxisX = readImageAxisX(accessFile);
@@ -53,7 +67,6 @@ public class SFFSubfileParser {
         String comment = readComment(accessFile);
         byte[] pcxGraphicData = readPcxGraphicData(accessFile, subfileLength);
 
-        accessFile.close();
 
         SffItem sffItem = SffItem.builder()
                 .nextSubfileOffset(nextSubfileOffset)
@@ -67,9 +80,7 @@ public class SFFSubfileParser {
                 .comment(comment)
                 .pcxGraphicData(pcxGraphicData)
                 .build();
-        return List.of(
-                sffItem
-        );
+        return sffItem;
     }
 
     private int readNextSubfileOffset(RandomAccessFile file) throws IOException {
