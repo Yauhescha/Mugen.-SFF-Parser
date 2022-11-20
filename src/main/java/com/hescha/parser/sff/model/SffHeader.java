@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class SffHeader {
     public static final String signature = "ElecbyteSpr";
-    private int version;
+    private SffVersion version;
     private int numberOfGroup;
     private int numberOfImages;
     private int offsetFirstSubfile;

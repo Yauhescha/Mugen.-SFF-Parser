@@ -3,11 +3,11 @@ package com.hescha.parser.sff.parser;
 import com.hescha.parser.sff.exception.SignatureException;
 import com.hescha.parser.sff.exception.VersionDoesNotSupportedException;
 import com.hescha.parser.sff.model.SffHeader;
+import com.hescha.parser.sff.model.SffVersion;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
 
 import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
 
@@ -35,7 +35,7 @@ public class SffV1HeaderParser {
         accessFile = new RandomAccessFile(file, "r");
         checkSignature();
 
-        int version = readVersion();
+        SffVersion version = readVersion();
         int numberOfGroup = readNumberOfGroup();
         int numberOfImages = readNumberOfImages();
         int offsetFirstSubfile = readOffsetFirstSubfile();
@@ -65,15 +65,16 @@ public class SffV1HeaderParser {
         }
     }
 
-    private int readVersion() throws IOException {
+    private SffVersion readVersion() throws IOException {
         accessFile.seek(12);
-        byte[] version = new byte[4];
-        accessFile.read(version);
-        short aShort = ByteBuffer.wrap(version).getShort();
-        if(aShort!=1){
+        byte verhi = accessFile.readByte();
+        byte verlo1 = accessFile.readByte();
+        byte verlo2 = accessFile.readByte();
+        byte verlo3 = accessFile.readByte();
+        if (verlo3 != 1) {
             throw new VersionDoesNotSupportedException();
         }
-        return aShort;
+        return new SffVersion(verhi, verlo1, verlo2, verlo3);
     }
 
     private int readNumberOfGroup() throws IOException {
