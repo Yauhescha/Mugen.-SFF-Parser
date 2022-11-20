@@ -1,5 +1,6 @@
-package com.hescha.parser.sff.model;
+package com.hescha.parser.sff.model.v1;
 
+import com.hescha.parser.sff.model.SffVersion;
 import lombok.Builder;
 import lombok.Data;
 

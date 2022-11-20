@@ -1,9 +1,8 @@
-package com.hescha.parser.sff.parser;
+package com.hescha.parser.sff.parser.v1;
 
-import com.hescha.parser.sff.exception.SignatureException;
-import com.hescha.parser.sff.exception.VersionDoesNotSupportedException;
-import com.hescha.parser.sff.model.SffHeader;
+import com.hescha.parser.sff.model.v1.SffHeader;
 import com.hescha.parser.sff.model.SffVersion;
+import com.hescha.parser.sff.parser.SffHeaderParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,18 +26,18 @@ Bytes
 33-35 Blank; set to zero [03]
 36-511 Blank; can be used for comments [476]
 \*--------------------------------------------------------------------------*/
-public class SffV1HeaderParser {
+public class SffV1HeaderParser extends SffHeaderParser {
 
     private RandomAccessFile accessFile;
 
     public SffHeader parse(File file) throws IOException {
         accessFile = new RandomAccessFile(file, "r");
-        checkSignature();
+        checkSignature(accessFile);
 
-        SffVersion version = readVersion();
+        SffVersion version = readVersion(accessFile, 1);
         int numberOfGroup = readNumberOfGroup();
-        int numberOfImages = readNumberOfImages();
-        int offsetFirstSubfile = readOffsetFirstSubfile();
+        int numberOfImages = readNumberOfSprites();
+        int offsetFirstSubfile = readOffsetFirstSpriteNode();
         int subheaderSite = readSubheaderSite();
         int paletteType = readPaletteType();
         String comment = readComment();
@@ -56,38 +55,17 @@ public class SffV1HeaderParser {
                 .build();
     }
 
-    private void checkSignature() throws IOException {
-        accessFile.seek(0);
-        byte[] signature = new byte[11];
-        accessFile.read(signature);
-        if (!SffHeader.signature.equals(new String(signature))) {
-            throw new SignatureException();
-        }
-    }
-
-    private SffVersion readVersion() throws IOException {
-        accessFile.seek(12);
-        byte verhi = accessFile.readByte();
-        byte verlo1 = accessFile.readByte();
-        byte verlo2 = accessFile.readByte();
-        byte verlo3 = accessFile.readByte();
-        if (verlo3 != 1) {
-            throw new VersionDoesNotSupportedException();
-        }
-        return new SffVersion(verhi, verlo1, verlo2, verlo3);
-    }
-
     private int readNumberOfGroup() throws IOException {
         accessFile.seek(16);
         return readInt(accessFile);
     }
 
-    private int readNumberOfImages() throws IOException {
+    private int readNumberOfSprites() throws IOException {
         accessFile.seek(20);
         return readInt(accessFile);
     }
 
-    private int readOffsetFirstSubfile() throws IOException {
+    private int readOffsetFirstSpriteNode() throws IOException {
         accessFile.seek(24);
         return readInt(accessFile);
     }

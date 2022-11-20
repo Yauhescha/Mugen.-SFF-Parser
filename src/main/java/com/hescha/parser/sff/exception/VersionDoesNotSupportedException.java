@@ -1,8 +1,14 @@
 package com.hescha.parser.sff.exception;
 
-public class VersionDoesNotSupportedException extends RuntimeException{
-    private static final String MESSAGE = "Version greater than 1 does not supported";
-    public VersionDoesNotSupportedException() {
-        super(MESSAGE);
+import com.hescha.parser.sff.model.SffVersion;
+
+public class VersionDoesNotSupportedException extends RuntimeException {
+    private static final String MESSAGE = "Current version %s does not supported";
+
+    public VersionDoesNotSupportedException(SffVersion version) {
+        super(String.format(MESSAGE, version.getVerhi() + "."
+                + version.getVerlo1()
+                + version.getVerlo2()
+                + version.getVerlo3()));
     }
 }

@@ -1,8 +1,8 @@
-package com.hescha.parser.sff.parser;
+package com.hescha.parser.sff.parser.v1;
 
-import com.hescha.parser.sff.model.SffFile;
-import com.hescha.parser.sff.model.SffHeader;
-import com.hescha.parser.sff.model.SffItem;
+import com.hescha.parser.sff.model.v1.SffFile;
+import com.hescha.parser.sff.model.v1.SffHeader;
+import com.hescha.parser.sff.model.v1.SffItem;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.hescha.parser.sff.model;
+package com.hescha.parser.sff.model.v1;
 
 import com.google.common.primitives.Bytes;
 import lombok.Builder;

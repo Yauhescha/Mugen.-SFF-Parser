@@ -1,8 +1,8 @@
 package com.hescha.parser.sff.v1;
 
-import com.hescha.parser.sff.model.SffFile;
-import com.hescha.parser.sff.model.SffItem;
-import com.hescha.parser.sff.parser.SffV1Parser;
+import com.hescha.parser.sff.model.v1.SffFile;
+import com.hescha.parser.sff.model.v1.SffItem;
+import com.hescha.parser.sff.parser.v1.SffV1Parser;
 import org.apache.commons.imaging.formats.pcx.PcxImageParser;
 
 import javax.swing.ImageIcon;
@@ -19,7 +19,7 @@ public class ShowAllSprites {
     public static void main(String[] args) throws Exception {
         System.out.println("START");
 
-        String filename = "src\\test\\resources\\AM_Kisame.sff";
+        String filename = "src\\test\\resources\\v1.sff";
 
         SffV1Parser parser = new SffV1Parser();
         SffFile parse = parser.parse(new File(filename));
