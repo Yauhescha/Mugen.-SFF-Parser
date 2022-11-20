@@ -19,4 +19,8 @@ public class SffVersion {
         return version.verhi == 0 && version.verlo1 == 0 && version.verlo2 == 0 && version.verlo3 == 2;
     }
 
+    public static boolean isFileVersion2Dot1(SffVersion version) {
+        return version.verhi == 0 && version.verlo1 == 1 && version.verlo2 == 0 && version.verlo3 == 2;
+    }
+
 }
