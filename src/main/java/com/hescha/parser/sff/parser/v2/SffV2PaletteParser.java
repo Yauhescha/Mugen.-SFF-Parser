@@ -39,7 +39,6 @@ public class SffV2PaletteParser extends SffHeaderParser {
         firstOffset = header.getOffsetFirstPaletteNode();
         for (int paletteNumber = 0; paletteNumber < header.getNumberOfPalettes(); paletteNumber++) {
             Palette palette = parsePaletteByNumber(paletteNumber);
-            System.out.println("update number: " + paletteNumber);
             updatePaletteData(palettes, palette);
             palettes.add(palette);
         }
