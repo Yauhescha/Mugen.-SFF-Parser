@@ -13,4 +13,6 @@ import java.util.List;
 public class SffV2File {
     private SffV2Header header;
     private List<SffV2Item> subfiles = new ArrayList<>();
+
+    private List<Palette> palettes = new ArrayList<>();
 }
