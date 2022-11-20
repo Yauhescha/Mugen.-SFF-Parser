@@ -19,4 +19,5 @@ public class SffV2Item {
     private int dataLength;
     private int paletteIndex;
     private int flags;
+    private byte[] data;
 }

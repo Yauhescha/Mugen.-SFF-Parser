@@ -44,6 +44,7 @@ public class SffV2SubfileParser {
         firstOffset = header.getOffsetFirstSpriteNode();
         for (int spriteNumber = 0; spriteNumber < header.getNumberOfSprites(); spriteNumber++) {
             SffV2Item sprite = parseSpriteByNumber(spriteNumber);
+            updateSpriteData(sprites, sprite);
             sprites.add(sprite);
         }
 
@@ -82,5 +83,18 @@ public class SffV2SubfileParser {
                 .paletteIndex(paletteIndex)
                 .flags(flags)
                 .build();
+    }
+
+    // TODO: use link to sprite instead of copying
+    private void updateSpriteData(List<SffV2Item> sprites, SffV2Item sprite) throws IOException {
+        if (sprite.getLinkedSpriteNumber() == 0) {
+            accessFile.seek(sprite.getOffset());
+            byte[] data = new byte[sprite.getDataLength()];
+            accessFile.read(data);
+            sprite.setData(data);
+        } else {
+            sprite.setData(sprites.get(sprite.getLinkedSpriteNumber()).getData());
+        }
+
     }
 }
