@@ -6,7 +6,6 @@ import com.hescha.parser.sff.model.SffItem;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,61 +35,67 @@ This is the actual
 32- PCX graphic data. If palette data is available, it is the last
 768 bytes.
 \*--------------------------------------------------------------------------*/
-public class SFFSubfileParser {
+public class SffV1SubfileParser {
     private int subfileOffsetStartpoint = 512;
 
-    public static byte[] combineArray(final byte[] array1, byte[] array2) {
-        byte[] joinedArray = Arrays.copyOf(array1, array1.length + array2.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
-    }
-
     public List<SffItem> parse(SffHeader header, File file) throws IOException {
-        subfileOffsetStartpoint = header.getOffsetFirstSubfile();
-
-        RandomAccessFile accessFile = new RandomAccessFile(file, "r");
-        SffItem sffItem;
         List<SffItem> list = new ArrayList<>();
+        SffItem sffItem;
+        RandomAccessFile accessFile = new RandomAccessFile(file, "r");
 
+        subfileOffsetStartpoint = header.getOffsetFirstSubfile();
         do {
             sffItem = parseSubfile(accessFile);
-            checkPalette(sffItem, list);
+            correctSprite(list, sffItem);
             list.add(sffItem);
+
             subfileOffsetStartpoint = sffItem.getNextSubfileOffset();
             accessFile.seek(subfileOffsetStartpoint);
         } while (accessFile.length() != subfileOffsetStartpoint);
+
         accessFile.close();
-        System.out.println("List size: " + list.size());
         return list;
     }
 
-    private void checkPalette(SffItem sffItem, List<SffItem> list) {
-        if(sffItem.isPaletteAsPrevious()){
+    private void correctSprite(List<SffItem> list, SffItem sffItem) {
+        if (sffItem.getPreviousCopySprite() != 0) {
+            loadCopySprite(list, sffItem);
+        } else {
+            correctPalette(sffItem, list);
+        }
+    }
+
+    private void loadCopySprite(List<SffItem> list, SffItem sffItem) {
+        SffItem previous = list.get(sffItem.getPreviousCopySprite());
+        sffItem.setPcxGraphicData(previous.getPcxGraphicData());
+        sffItem.setPcxPalette(previous.getPcxPalette());
+        sffItem.setPaletteAsPrevious(previous.isPaletteAsPrevious());
+    }
+
+    private void correctPalette(SffItem sffItem, List<SffItem> list) {
+        if (sffItem.isPaletteAsPrevious()) {
             SffItem last = list.get(list.size() - 1);
             sffItem.setPcxPalette(last.getPcxPalette());
-        }
-        else{
+        } else {
             byte[] graphicData = sffItem.getPcxGraphicData();
-            if(graphicData.length==0) return;
-            byte[] palette = Arrays.copyOfRange(graphicData, graphicData.length-768, graphicData.length);
+            byte[] palette = Arrays.copyOfRange(graphicData, graphicData.length - 768, graphicData.length);
             sffItem.setPcxPalette(palette);
         }
     }
 
     private SffItem parseSubfile(RandomAccessFile accessFile) throws IOException {
         int nextSubfileOffset = readNextSubfileOffset(accessFile);
-        int subfileLength = readSubfileLength(accessFile); //without header
+        int subfileLength = readSubfileLength(accessFile);
         int imageAxisX = readImageAxisX(accessFile);
         int imageAxisY = readImageAxisY(accessFile);
         int groupNumber = readGroupNumber(accessFile);
         int imageNumber = readImageNumber(accessFile);
-        Integer previousCopySprite = readPreviousCopySprite(accessFile);
+        int previousCopySprite = readPreviousCopySprite(accessFile);
         boolean paletteAsPrevious = readPaletteAsPrevious(accessFile);
         String comment = readComment(accessFile);
         byte[] pcxGraphicData = readPcxGraphicData(accessFile, subfileLength);
 
-
-        SffItem sffItem = SffItem.builder()
+        return SffItem.builder()
                 .nextSubfileOffset(nextSubfileOffset)
                 .subfileLength(subfileLength)
                 .imageAxisX(imageAxisX)
@@ -102,15 +107,12 @@ public class SFFSubfileParser {
                 .comment(comment)
                 .pcxGraphicData(pcxGraphicData)
                 .build();
-        return sffItem;
     }
 
     private int readNextSubfileOffset(RandomAccessFile file) throws IOException {
         file.seek(subfileOffsetStartpoint);
         return readInt(file);
     }
-
-    //    Length is 0 if it is a linked sprite
 
     private int readSubfileLength(RandomAccessFile file) throws IOException {
         file.seek(subfileOffsetStartpoint + 4);

@@ -8,11 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class SFFParser {
+public class SffV1Parser {
 
     public SffFile parse(File file) throws IOException {
-        SffHeader header = new SFFHeaderParser().parse(file);
-        List<SffItem> subfiles = new SFFSubfileParser().parse(header, file);
+        SffHeader header = new SffV1HeaderParser().parse(file);
+        List<SffItem> subfiles = new SffV1SubfileParser().parse(header, file);
         return new SffFile(header, subfiles);
     }
 }
