@@ -16,11 +16,11 @@ public class SffVersion {
     }
 
     public static boolean isFileVersion2Dot0(SffVersion version) {
-        return version.verhi == 0 && version.verlo1 == 0 && version.verlo2 == 0 && version.verlo3 == 2;
+        return version.verhi == 2 && version.verlo1 == 0 && version.verlo2 == 0 && version.verlo3 == 0;
     }
 
     public static boolean isFileVersion2Dot1(SffVersion version) {
-        return version.verhi == 0 && version.verlo1 == 1 && version.verlo2 == 0 && version.verlo3 == 2;
+        return version.verhi == 2 && version.verlo1 == 0 && version.verlo2 == 0 && version.verlo3 == 0;
     }
 
 }
