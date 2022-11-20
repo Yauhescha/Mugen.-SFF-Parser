@@ -38,7 +38,10 @@ public class SffV2PaletteParser extends SffHeaderParser {
 
         firstOffset = header.getOffsetFirstPaletteNode();
         for (int paletteNumber = 0; paletteNumber < header.getNumberOfPalettes(); paletteNumber++) {
-            palettes.add(parsePaletteByNumber(paletteNumber));
+            Palette palette = parsePaletteByNumber(paletteNumber);
+            System.out.println("update number: " + paletteNumber);
+            updatePaletteData(palettes, palette);
+            palettes.add(palette);
         }
 
         return palettes;
@@ -61,5 +64,17 @@ public class SffV2PaletteParser extends SffHeaderParser {
                 .offsetIntoData(offsetIntoData)
                 .dataLength(dataLength)
                 .build();
+    }
+
+    // TODO: Use links to palette instead of data copying
+    private void updatePaletteData(List<Palette> palettes, Palette palette) throws IOException {
+        if (palette.getLinkedPalette() == 0) {
+            accessFile.seek(palette.getOffsetIntoData());
+            byte[] paletteData = new byte[palette.getDataLength()];
+            accessFile.read(paletteData);
+            palette.setData(paletteData);
+        } else {
+            palette.setData(palettes.get(palette.getLinkedPalette()).getData());
+        }
     }
 }
