@@ -47,7 +47,7 @@ public class SffV2PaletteParser extends SffHeaderParser {
     }
 
     private Palette parsePaletteByNumber(int paletteNumber) throws IOException {
-        accessFile.seek(firstOffset + paletteNumber * PALETTE_SIZE_IN_BYTES);
+        accessFile.seek(firstOffset + (long) paletteNumber * PALETTE_SIZE_IN_BYTES);
         int groupNumber = readShort(accessFile);
         int itemNumber = readShort(accessFile);
         int columNumber = readShort(accessFile);
