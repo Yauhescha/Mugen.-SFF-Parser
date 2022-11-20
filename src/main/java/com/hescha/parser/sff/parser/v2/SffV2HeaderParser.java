@@ -1,5 +1,6 @@
 package com.hescha.parser.sff.parser.v2;
 
+import com.hescha.parser.sff.exception.VersionDoesNotSupportedException;
 import com.hescha.parser.sff.model.SffVersion;
 import com.hescha.parser.sff.model.v2.SffV2Header;
 import com.hescha.parser.sff.parser.SffHeaderParser;
@@ -49,7 +50,7 @@ public class SffV2HeaderParser extends SffHeaderParser {
         accessFile = new RandomAccessFile(file, "r");
         checkSignature(accessFile);
 
-        SffVersion version = readVersion(accessFile, 2);
+        SffVersion version = readVersion();
         SffVersion compatVersion = readCompatVersion();
         int offsetFirstSpriteNode = readOffsetFirstSpriteNode();
         int numberOfSprites = readNumberOfSprites();
@@ -76,6 +77,19 @@ public class SffV2HeaderParser extends SffHeaderParser {
                 .tDataLength(tDataLength)
                 .comment(comment)
                 .build();
+    }
+
+    private SffVersion readVersion() throws IOException {
+        accessFile.seek(12);
+        byte verlo3 = accessFile.readByte();
+        byte verlo2 = accessFile.readByte();
+        byte verlo1 = accessFile.readByte();
+        byte verhi = accessFile.readByte();
+        SffVersion sffVersion = new SffVersion(verhi, verlo1, verlo2, verlo3);
+        if (!SffVersion.isFileVersion2Dot0(sffVersion)) {
+            throw new VersionDoesNotSupportedException(sffVersion);
+        }
+        return sffVersion;
     }
 
     protected SffVersion readCompatVersion() throws IOException {
