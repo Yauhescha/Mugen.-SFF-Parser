@@ -13,6 +13,11 @@ public class SffV2Item {
     private int imageAxisX;
     private int imageAxisY;
     private int linkedSpriteNumber;
+//    0 raw
+//    1 invalid (no use)
+//    2 RLE8
+//    3 RLE5
+//    4 LZ5
     private int compressionAlgorithm;
     private int biDepth;
     private int offset;

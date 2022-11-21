@@ -31,9 +31,11 @@ public class SffV2PaletteParser extends SffHeaderParser {
     private static final byte PALETTE_SIZE_IN_BYTES = 16;
     private RandomAccessFile accessFile;
     int firstOffset;
+    int lDataOffset;
 
     public List<Palette> parse(SffV2Header header, File file) throws IOException {
         accessFile = new RandomAccessFile(file, "r");
+        lDataOffset = header.getLDataOffset();
         List<Palette> palettes = new ArrayList<>();
 
         firstOffset = header.getOffsetFirstPaletteNode();
@@ -68,7 +70,7 @@ public class SffV2PaletteParser extends SffHeaderParser {
     // TODO: Use links to palette instead of data copying
     private void updatePaletteData(List<Palette> palettes, Palette palette) throws IOException {
         if (palette.getLinkedPalette() == 0) {
-            accessFile.seek(palette.getOffsetIntoData());
+            accessFile.seek(lDataOffset + palette.getOffsetIntoData());
             byte[] paletteData = new byte[palette.getDataLength()];
             accessFile.read(paletteData);
             palette.setData(paletteData);

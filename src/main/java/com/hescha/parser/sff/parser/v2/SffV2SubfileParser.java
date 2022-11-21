@@ -36,10 +36,12 @@ public class SffV2SubfileParser {
     private static final byte SPRITE_SIZE_IN_BYTES = 28;
     private RandomAccessFile accessFile;
     int firstOffset;
+    int tDataOffset;
 
     public List<SffV2Item> parse(SffV2Header header, File file) throws IOException {
         List<SffV2Item> sprites = new ArrayList<>();
         this.accessFile = new RandomAccessFile(file, "r");
+        this.tDataOffset = header.getTDataOffset();
 
         firstOffset = header.getOffsetFirstSpriteNode();
         for (int spriteNumber = 0; spriteNumber < header.getNumberOfSprites(); spriteNumber++) {
@@ -88,7 +90,7 @@ public class SffV2SubfileParser {
     // TODO: use link to sprite instead of copying
     private void updateSpriteData(List<SffV2Item> sprites, SffV2Item sprite) throws IOException {
         if (sprite.getLinkedSpriteNumber() == 0) {
-            accessFile.seek(sprite.getOffset());
+            accessFile.seek(tDataOffset + sprite.getOffset());
             byte[] data = new byte[sprite.getDataLength()];
             accessFile.read(data);
             sprite.setData(data);
