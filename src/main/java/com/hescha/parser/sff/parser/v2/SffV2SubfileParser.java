@@ -2,6 +2,7 @@ package com.hescha.parser.sff.parser.v2;
 
 import com.hescha.parser.sff.model.v2.SffV2Header;
 import com.hescha.parser.sff.model.v2.SffV2Item;
+import com.hescha.parser.wrapper.Decoder;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +94,9 @@ public class SffV2SubfileParser {
             accessFile.seek(generalOffset + sprite.getOffset());
             byte[] data = new byte[sprite.getDataLength()];
             accessFile.read(data);
-            sprite.setData(data);
+
+            byte[] decodedData = Decoder.decode(sprite, data);
+            sprite.setData(decodedData);
         } else {
             sprite.setData(sprites.get(sprite.getLinkedSpriteNumber()).getData());
         }

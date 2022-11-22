@@ -73,6 +73,7 @@ public class SffV2PaletteParser extends SffHeaderParser {
             accessFile.seek(lDataOffset + palette.getOffsetIntoData());
             byte[] paletteData = new byte[palette.getDataLength()];
             accessFile.read(paletteData);
+
             byte[] clearedData = clearData(paletteData);
             palette.setData(clearedData);
         } else {
@@ -80,17 +81,16 @@ public class SffV2PaletteParser extends SffHeaderParser {
         }
     }
 
-    // Palette in SFFv1 has 3 byte, in SFFv2 has 4 byte, and each fourth byte is junk
+    // Palette in SFFv1 has 3 bytes, in SFFv2 has 4 bytes, and each fourth byte is junk
     private byte[] clearData(byte[] paletteData) {
         byte[] result = new byte[paletteData.length * 3 / 4];
         int colorIndex = 0;
         for (int i = 0; i < paletteData.length; i++) {
-            if ((i+1) % 4 != 0) {
+            if ((i + 1) % 4 != 0) {
                 result[colorIndex] = paletteData[i];
                 colorIndex++;
             }
         }
-
         return result;
     }
 }

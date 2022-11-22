@@ -15,9 +15,10 @@ import java.util.List;
  * You should know, that this parser only READ information.
  * REMEMBER: Sprite data does not decomposed!
  *
- * @author  Yauhescha
+ * @author Yauhescha
  * @version 1.0
- * @since   2022-13-22
+ * @since 2022-13-22
+ * Thanks this article https://tieba.baidu.com/p/5273712178
  */
 public class SffV2Parser {
 
