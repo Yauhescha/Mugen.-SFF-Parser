@@ -14,15 +14,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.18.24</lombok.version>
         <guava.version>31.1-jre</guava.version>
-        <commons-imaging.version>1.0-alpha2</commons-imaging.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-imaging</artifactId>
-            <version>${commons-imaging.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -34,5 +28,4 @@
             <version>${guava.version}</version>
         </dependency>
     </dependencies>
-
 </project>
