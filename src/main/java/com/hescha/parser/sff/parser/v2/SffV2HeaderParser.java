@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readInt;
 
 /*--| SFF file structure
 |--------------------------------------------------*\
@@ -54,7 +54,7 @@ public class SffV2HeaderParser extends SffHeaderParser {
         SffVersion compatVersion = readCompatVersion();
         int offsetFirstSpriteNode = readOffsetFirstSpriteNode();
         int numberOfSprites = readNumberOfSprites();
-        int offsetFirstPaletteNode =readOffsetFirstPaletteNode();
+        int offsetFirstPaletteNode = readOffsetFirstPaletteNode();
         int numberOfPalettes = readNumberOfPalettes();
         int lDataOffset = readLDataOffset();
         int lDataLength = readLDataLength();

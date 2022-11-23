@@ -2,6 +2,7 @@ package com.hescha.parser.sff.parser.v2;
 
 import com.hescha.parser.sff.model.v2.SffV2Header;
 import com.hescha.parser.sff.model.v2.SffV2Item;
+import com.hescha.parser.sff.util.Decoder;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +10,8 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readShort;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readInt;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readShort;
 
 /*
 |--------------------------------------------------*\
@@ -36,17 +37,16 @@ public class SffV2SubfileParser {
     private static final byte SPRITE_SIZE_IN_BYTES = 28;
     private RandomAccessFile accessFile;
     int firstOffset;
-    int tDataOffset;
+    int generalOffset;
 
     public List<SffV2Item> parse(SffV2Header header, File file) throws IOException {
         List<SffV2Item> sprites = new ArrayList<>();
         this.accessFile = new RandomAccessFile(file, "r");
-        this.tDataOffset = header.getTDataOffset();
 
         firstOffset = header.getOffsetFirstSpriteNode();
         for (int spriteNumber = 0; spriteNumber < header.getNumberOfSprites(); spriteNumber++) {
             SffV2Item sprite = parseSpriteByNumber(spriteNumber);
-            updateSpriteData(sprites, sprite);
+            updateSpriteData(header, sprites, sprite);
             sprites.add(sprite);
         }
 
@@ -88,12 +88,15 @@ public class SffV2SubfileParser {
     }
 
     // TODO: use link to sprite instead of copying
-    private void updateSpriteData(List<SffV2Item> sprites, SffV2Item sprite) throws IOException {
+    private void updateSpriteData(SffV2Header header, List<SffV2Item> sprites, SffV2Item sprite) throws IOException {
+        generalOffset = sprite.getFlags() == 0 ? header.getLDataOffset() : header.getTDataOffset();
         if (sprite.getLinkedSpriteNumber() == 0) {
-            accessFile.seek(tDataOffset + sprite.getOffset());
+            accessFile.seek(generalOffset + sprite.getOffset());
             byte[] data = new byte[sprite.getDataLength()];
             accessFile.read(data);
-            sprite.setData(data);
+
+            byte[] decodedData = Decoder.decode(sprite, data);
+            sprite.setData(decodedData);
         } else {
             sprite.setData(sprites.get(sprite.getLinkedSpriteNumber()).getData());
         }

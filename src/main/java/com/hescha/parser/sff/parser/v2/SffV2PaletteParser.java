@@ -10,8 +10,8 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readShort;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readInt;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readShort;
 
 /*--| SFF file structure
 |--------------------------------------------------*\
@@ -73,9 +73,24 @@ public class SffV2PaletteParser extends SffHeaderParser {
             accessFile.seek(lDataOffset + palette.getOffsetIntoData());
             byte[] paletteData = new byte[palette.getDataLength()];
             accessFile.read(paletteData);
-            palette.setData(paletteData);
+
+            byte[] clearedData = clearData(paletteData);
+            palette.setData(clearedData);
         } else {
             palette.setData(palettes.get(palette.getLinkedPalette()).getData());
         }
+    }
+
+    // Palette in SFFv1 has 3 bytes, in SFFv2 has 4 bytes, and each fourth byte is junk
+    private byte[] clearData(byte[] paletteData) {
+        byte[] result = new byte[paletteData.length * 3 / 4];
+        int colorIndex = 0;
+        for (int i = 0; i < paletteData.length; i++) {
+            if ((i + 1) % 4 != 0) {
+                result[colorIndex] = paletteData[i];
+                colorIndex++;
+            }
+        }
+        return result;
     }
 }

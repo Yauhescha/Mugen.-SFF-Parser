@@ -1,4 +1,4 @@
-package com.hescha.parser.wrapper;
+package com.hescha.parser.sff.util;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -17,6 +17,7 @@ public class ReverseByteWrapper {
         return ByteBuffer.wrap(reverseArray(sizeOfSubheaderInBytes)).getInt();
     }
 
+    // TODO: try to find better way
     private static byte[] reverseArray(byte[] a) {
         byte[] ret = new byte[a.length];
         for (int i = 0, j = a.length - 1; i < a.length && j >= 0; i++, j--)

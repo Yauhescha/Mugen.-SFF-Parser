@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readShort;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readInt;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readShort;
 
 /*
 |--------------------------------------------------*\

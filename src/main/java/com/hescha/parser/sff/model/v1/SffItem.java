@@ -19,6 +19,7 @@ public class SffItem {
     private byte[] pcxGraphicData;
     private byte[] pcxPalette;
 
+    // TODO: update this method or create a new one
     public byte[] getImageGraphicData() {
         if (paletteAsPrevious) {
             return Bytes.concat(pcxGraphicData, pcxPalette);
