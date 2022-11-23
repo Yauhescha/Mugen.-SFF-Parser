@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readInt;
 
 /*--| SFF file structure
 |--------------------------------------------------*\

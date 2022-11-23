@@ -13,9 +13,9 @@ import java.util.List;
  * parse SFFv1 file and read all information include all sprites.
  * You can display your pcx sprite via PcxImageParser.
  *
- * @author  Yauhescha
+ * @author Yauhescha
  * @version 1.0
- * @since   2022-13-22
+ * @since 2022-13-22
  */
 public class SffV1Parser {
 

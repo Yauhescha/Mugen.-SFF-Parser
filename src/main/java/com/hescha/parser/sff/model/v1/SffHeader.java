@@ -13,7 +13,7 @@ public class SffHeader {
     private int numberOfImages;
     private int offsetFirstSubfile;
     private int subheaderSite;
-
+    // TODO: Create enum for this field
     /**
      * 1=SPRPALTYPE_SHARED,  0=SPRPALTYPE_INDIV
      */

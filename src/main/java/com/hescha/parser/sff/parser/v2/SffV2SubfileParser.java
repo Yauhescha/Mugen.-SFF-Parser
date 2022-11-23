@@ -2,7 +2,7 @@ package com.hescha.parser.sff.parser.v2;
 
 import com.hescha.parser.sff.model.v2.SffV2Header;
 import com.hescha.parser.sff.model.v2.SffV2Item;
-import com.hescha.parser.wrapper.Decoder;
+import com.hescha.parser.sff.util.Decoder;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readInt;
-import static com.hescha.parser.wrapper.ReverseByteWrapper.readShort;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readInt;
+import static com.hescha.parser.sff.util.ReverseByteWrapper.readShort;
 
 /*
 |--------------------------------------------------*\

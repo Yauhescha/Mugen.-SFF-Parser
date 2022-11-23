@@ -1,21 +1,10 @@
-package com.hescha.parser.wrapper;
+package com.hescha.parser.sff.util;
 
-import com.google.common.primitives.Bytes;
 import com.hescha.parser.sff.exception.DecodeException;
 import com.hescha.parser.sff.exception.NotSupportDecodeAlgorithmException;
-import com.hescha.parser.sff.model.v2.Palette;
-import com.hescha.parser.sff.model.v2.SffV2File;
 import com.hescha.parser.sff.model.v2.SffV2Item;
-import com.hescha.parser.sff.parser.v2.SffV2Parser;
-import org.apache.commons.imaging.formats.pcx.PcxImageParser;
-import org.apache.commons.io.FileUtils;
 
-import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.nio.ByteBuffer;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +18,7 @@ public class Decoder {
             case 2:
                 return fromRLE8(data);
             default:
+                // TODO: change exception constructor with enum
                 throw new NotSupportDecodeAlgorithmException(sprite.getCompressionAlgorithm() + "");
         }
     }
@@ -57,7 +47,7 @@ public class Decoder {
 
         return getBytesFromList(result);
     }
-
+    // TODO: try to find better way
     private static byte[] getBytesFromList(List<Byte> result) {
         byte[] byteRes = new byte[result.size()];
         for (int i = 0; i < result.size(); i++) {
@@ -66,6 +56,7 @@ public class Decoder {
         return byteRes;
     }
 
+    // TODO: try to find better way
     private static byte[] reverseArray(byte[] a) {
         byte[] ret = new byte[a.length];
         for (int i = 0, j = a.length - 1; i < a.length && j >= 0; i++, j--)
