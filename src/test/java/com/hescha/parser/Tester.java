@@ -5,7 +5,7 @@ import com.hescha.parser.sff.model.v2.Palette;
 import com.hescha.parser.sff.model.v2.SffV2File;
 import com.hescha.parser.sff.model.v2.SffV2Item;
 import com.hescha.parser.sff.parser.v2.SffV2Parser;
-import com.hescha.parser.wrapper.PcxHeaderTemplate;
+import com.hescha.parser.sff.util.PcxHeaderTemplate;
 import org.apache.commons.imaging.formats.pcx.PcxImageParser;
 
 import javax.swing.*;
@@ -19,6 +19,7 @@ public class Tester {
 //        String filename = "C:\\Users\\Administrator\\Desktop\\mugen\\2.1png.sff";
 //        String filename = "C:\\Users\\Administrator\\Desktop\\mugen\\2.0.sff";
         String filename = "D:\\Download\\MUGEN\\Naruto Konoha Legends M.U.G.E.N\\chars\\AM_Kisame - Copy\\AM_Kisame.sff";
+//        String filename = "C:\\Users\\Administrator\\Desktop\\mugen\\SM_Hashirama.sff";
         File file = new File(filename);
 
         SffV2Parser parser = new SffV2Parser();
