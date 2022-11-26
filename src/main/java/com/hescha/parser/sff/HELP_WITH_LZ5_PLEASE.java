@@ -32,11 +32,12 @@ public class HELP_WITH_LZ5_PLEASE {
             ControlPacket controlPacket = new ControlPacket(file);
             // go throw all packet by control flags
             for (int i = 0; i < controlPacket.flags.length; i++) {
-                System.out.println("destination index "+resIndex);
                 // check end of file
                 if (resIndex == desiredLength) {
                     break;
                 }
+
+                System.out.println("Current resource index "+resIndex);
 
                 // rle packet if 0
                 if (controlPacket.flags[i] == 0) {
@@ -64,13 +65,6 @@ public class HELP_WITH_LZ5_PLEASE {
         }
 
     }
-    private static byte[] getBytesFromList(int desiredLength, List<Byte> result) {
-        byte[] byteRes = new byte[desiredLength];
-        for (int i = 0; i < result.size() & i < desiredLength; i++) {
-            byteRes[i] = result.get(i);
-        }
-        return byteRes;
-    }
 
 }
 
@@ -90,7 +84,7 @@ class Lz5Packet {
             int bottom8bitOffset = (file.readUnsignedByte());
             offset = (bottom8bitOffset + (top_offset << 2))+1;
 
-            copyLength = file.readByte() + 3;
+            copyLength = file.readUnsignedByte() + 3;
 
         }
         //short package
@@ -134,12 +128,12 @@ class RlePacket {
     public int count;
 
     public RlePacket(RandomAccessFile file) throws IOException {
-        var byte1 = file.readByte();
+        var byte1 = file.readUnsignedByte();
         color = (byte) (byte1 & 0b00011111);
 
         // long rle
         if ((byte1 & 0b11100000) == 0) {
-            count = file.readByte() + 8;
+            count = file.readUnsignedByte() + 8;
         } else {
             count = ((byte1 & 0b11100000) >> 5);
         }
