@@ -2,7 +2,7 @@ package com.hescha.parser.sff.parser.v2;
 
 import com.hescha.parser.sff.model.v2.SffV2Header;
 import com.hescha.parser.sff.model.v2.SffV2Item;
-import com.hescha.parser.sff.util.Decoder;
+import com.hescha.parser.sff.parser.v2.decoder.Decoder;
 
 import java.io.File;
 import java.io.IOException;

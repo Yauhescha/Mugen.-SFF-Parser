@@ -1,14 +1,12 @@
-package com.hescha.parser.sff.util;
+package com.hescha.parser.sff.parser.v2.decoder;
 
 import com.hescha.parser.sff.HELP_WITH_LZ5_PLEASE;
-import com.hescha.parser.sff.SffLz5Reader;
 import com.hescha.parser.sff.exception.DecodeException;
 import com.hescha.parser.sff.exception.NotSupportDecodeAlgorithmException;
 import com.hescha.parser.sff.model.v2.SffV2Item;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -16,7 +14,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class Decoder {
 
