@@ -1,10 +1,15 @@
-package com.hescha.parser.sff.util;
+package com.hescha.parser.sff.parser.v2.decoder;
 
 import com.hescha.parser.sff.exception.DecodeException;
 import com.hescha.parser.sff.exception.NotSupportDecodeAlgorithmException;
 import com.hescha.parser.sff.model.v2.SffV2Item;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +30,7 @@ public class Decoder {
             case 3:
                 return fromRLE5(data);
             case 4:
-//                return fromLZ5(data);
+                return Lz5Decoder.decode(data);
             case 10:
 //                return fromPNG8(data);
             case 11:
@@ -37,6 +42,29 @@ public class Decoder {
                 throw new NotSupportDecodeAlgorithmException(sprite.getCompressionAlgorithm() + "");
         }
     }
+//
+//    private static byte[] fromLZ5(byte[] data) {
+//
+//        byte[] bytes = Arrays.copyOfRange(data, 4, data.length - 4);
+//
+//
+//        try {
+//            String newFIleName = "C:\\Users\\Administrator\\Desktop\\mugen\\"
+//                    + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + "_" + Math.random();
+//            File file = new File(newFIleName);
+//            FileUtils.writeByteArrayToFile(file, bytes);
+//
+//            RandomAccessFile r = new RandomAccessFile(file, "r");
+//            byte[] parse = Lz5Decoder.decode(length, r);
+//            r.close();
+//            file.delete();
+//
+//            return Lz5Decoder.decode(length, r);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 
     private static byte[] fromRLE5(byte[] data) {
         List<Byte> result = new ArrayList<>();
@@ -77,7 +105,7 @@ public class Decoder {
 
     }
 
-    private static byte[] fromRLE8(byte[] data) {
+    public static byte[] fromRLE8(byte[] data) {
         List<Byte> result = new ArrayList<>();
         int length = ByteBuffer.wrap(reverseArray(Arrays.copyOf(data, 4))).getInt();
 
@@ -113,7 +141,7 @@ public class Decoder {
     }
 
     // TODO: try to find better way
-    private static byte[] reverseArray(byte[] a) {
+    static byte[] reverseArray(byte[] a) {
         byte[] ret = new byte[a.length];
         for (int i = 0, j = a.length - 1; i < a.length && j >= 0; i++, j--)
             ret[i] = a[j];
@@ -143,4 +171,98 @@ class RLE5packet {
     public byte getDataLength() {
         return dataLength;
     }
+
+
+
+
+
+
+
+
+
+
+//
+//
+//    public static byte[] tryy(byte[] rle){
+//            if len(rle) == 0 {
+//                return rle
+//            }
+//            p = make([]byte, int(s.Size[0])*int(s.Size[1]))
+//            i, j, n := 0, 0, 0
+//            ct, cts, rb, rbc := rle[i], uint(0), byte(0), uint(0)
+//            if i < len(rle)-1 {
+//                i++
+//            }
+//            for j < len(p) {
+//                d := int(rle[i])
+//                if i < len(rle)-1 {
+//                    i++
+//                }
+//                if ct&byte(1<<cts) != 0 {
+//                    if d&0x3f == 0 {
+//                        d = (d<<2 | int(rle[i])) + 1
+//                        if i < len(rle)-1 {
+//                            i++
+//                        }
+//                        n = int(rle[i]) + 2
+//                        if i < len(rle)-1 {
+//                            i++
+//                        }
+//                    } else {
+//                        rb |= byte(d & 0xc0 >> rbc)
+//                        rbc += 2
+//                        n = int(d & 0x3f)
+//                        if rbc < 8 {
+//                            d = int(rle[i]) + 1
+//                            if i < len(rle)-1 {
+//                                i++
+//                            }
+//                        } else {
+//                            d = int(rb) + 1
+//                            rb, rbc = 0, 0
+//                        }
+//                    }
+//                    for {
+//                        if j < len(p) {
+//                            p[j] = p[j-d]
+//                            j++
+//                        }
+//                        n--
+//                        if n < 0 {
+//                            break
+//                        }
+//                    }
+//                } else {
+//                    if d&0xe0 == 0 {
+//                        n = int(rle[i]) + 8
+//                        if i < len(rle)-1 {
+//                            i++
+//                        }
+//                    } else {
+//                        n = d >> 5
+//                        d &= 0x1f
+//                    }
+//                    for ; n > 0; n-- {
+//                        if j < len(p) {
+//                            p[j] = byte(d)
+//                                    j++
+//                        }
+//                    }
+//                }
+//                cts++
+//                if cts >= 8 {
+//                    ct, cts = rle[i], 0
+//                    if i < len(rle)-1 {
+//                        i++
+//                    }
+//                }
+//            }
+//            return
+//    }
+
+    private static int len(byte[] rle) {
+        return rle.length;
+    }
+
+
 }

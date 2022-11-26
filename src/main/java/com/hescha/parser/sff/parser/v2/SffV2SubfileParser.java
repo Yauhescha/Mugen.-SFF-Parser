@@ -2,7 +2,7 @@ package com.hescha.parser.sff.parser.v2;
 
 import com.hescha.parser.sff.model.v2.SffV2Header;
 import com.hescha.parser.sff.model.v2.SffV2Item;
-import com.hescha.parser.sff.util.Decoder;
+import com.hescha.parser.sff.parser.v2.decoder.Decoder;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class SffV2SubfileParser {
         int imageAxisX = readShort(accessFile);
         int imageAxisY = readShort(accessFile);
         int linkedSpriteNumber = readShort(accessFile);
-        int compressionAlgorithm = accessFile.readByte();
+        int compressionAlgorithm = accessFile.readUnsignedByte();
         int biDepth = accessFile.readByte();
         int offset = readInt(accessFile);
         int dataLength = readInt(accessFile);

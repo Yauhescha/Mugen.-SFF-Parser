@@ -42,10 +42,21 @@ public class SffV2PaletteParser extends SffHeaderParser {
         for (int paletteNumber = 0; paletteNumber < header.getNumberOfPalettes(); paletteNumber++) {
             Palette palette = parsePaletteByNumber(paletteNumber);
             updatePaletteData(palettes, palette);
+            byte[] newData = updateDataLength(palette);
+            palette.setData(newData);
             palettes.add(palette);
         }
 
         return palettes;
+    }
+
+    private byte[] updateDataLength(Palette palette) {
+        byte[] newData = new byte[768];
+        byte[] data = palette.getData();
+        for(int i = 0; i< data.length; i++){
+            newData[i]=data[i];
+        }
+        return newData;
     }
 
     private Palette parsePaletteByNumber(int paletteNumber) throws IOException {
