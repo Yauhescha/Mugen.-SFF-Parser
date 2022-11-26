@@ -1,6 +1,5 @@
 package com.hescha.parser.sff.parser.v2.decoder;
 
-import com.hescha.parser.sff.HELP_WITH_LZ5_PLEASE;
 import com.hescha.parser.sff.exception.DecodeException;
 import com.hescha.parser.sff.exception.NotSupportDecodeAlgorithmException;
 import com.hescha.parser.sff.model.v2.SffV2Item;
@@ -31,7 +30,7 @@ public class Decoder {
             case 3:
                 return fromRLE5(data);
             case 4:
-                return fromLZ5(data);
+                return Lz5Decoder.decode(data);
             case 10:
 //                return fromPNG8(data);
             case 11:
@@ -43,30 +42,29 @@ public class Decoder {
                 throw new NotSupportDecodeAlgorithmException(sprite.getCompressionAlgorithm() + "");
         }
     }
-
-    private static byte[] fromLZ5(byte[] data) {
-        int length = ByteBuffer.wrap(reverseArray(Arrays.copyOf(data, 4))).getInt();
-
-        byte[] bytes = Arrays.copyOfRange(data, 4, data.length - 4);
-
-
-        try {
-            String newFIleName = "C:\\Users\\Administrator\\Desktop\\mugen\\"
-                    + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + "_" + Math.random();
-            File file = new File(newFIleName);
-            FileUtils.writeByteArrayToFile(file, bytes);
-
-            RandomAccessFile r = new RandomAccessFile(file, "r");
-            byte[] parse = HELP_WITH_LZ5_PLEASE.PARSE(length, r);
-            r.close();
-            file.delete();
-
-            return parse;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-    }
+//
+//    private static byte[] fromLZ5(byte[] data) {
+//
+//        byte[] bytes = Arrays.copyOfRange(data, 4, data.length - 4);
+//
+//
+//        try {
+//            String newFIleName = "C:\\Users\\Administrator\\Desktop\\mugen\\"
+//                    + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + "_" + Math.random();
+//            File file = new File(newFIleName);
+//            FileUtils.writeByteArrayToFile(file, bytes);
+//
+//            RandomAccessFile r = new RandomAccessFile(file, "r");
+//            byte[] parse = Lz5Decoder.decode(length, r);
+//            r.close();
+//            file.delete();
+//
+//            return Lz5Decoder.decode(length, r);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 
     private static byte[] fromRLE5(byte[] data) {
         List<Byte> result = new ArrayList<>();
@@ -143,7 +141,7 @@ public class Decoder {
     }
 
     // TODO: try to find better way
-    private static byte[] reverseArray(byte[] a) {
+    static byte[] reverseArray(byte[] a) {
         byte[] ret = new byte[a.length];
         for (int i = 0, j = a.length - 1; i < a.length && j >= 0; i++, j--)
             ret[i] = a[j];

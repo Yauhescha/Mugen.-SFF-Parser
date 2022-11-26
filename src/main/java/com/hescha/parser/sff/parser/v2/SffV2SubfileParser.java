@@ -63,7 +63,7 @@ public class SffV2SubfileParser {
         int imageAxisX = readShort(accessFile);
         int imageAxisY = readShort(accessFile);
         int linkedSpriteNumber = readShort(accessFile);
-        int compressionAlgorithm = accessFile.readByte();
+        int compressionAlgorithm = accessFile.readUnsignedByte();
         int biDepth = accessFile.readByte();
         int offset = readInt(accessFile);
         int dataLength = readInt(accessFile);

@@ -1,21 +1,30 @@
-package com.hescha.parser.sff;
+package com.hescha.parser.sff.parser.v2.decoder;
 
-import com.hescha.parser.sff.parser.v2.decoder.ControlPacket;
-import com.hescha.parser.sff.parser.v2.decoder.Lz5Packet;
-import com.hescha.parser.sff.parser.v2.decoder.RlePacket;
+import org.apache.commons.io.FileUtils;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Arrays;
+
+import static com.hescha.parser.sff.parser.v2.decoder.Decoder.reverseArray;
 
 
-public class HELP_WITH_LZ5_PLEASE {
+public class Lz5Decoder {
 
-    static int resIndex = 0;
-
-    public static byte[] PARSE(int desiredLength, RandomAccessFile file) throws IOException {
+    public static byte[] decode(byte[] data) {
+        int desiredLength = ByteBuffer.wrap(reverseArray(Arrays.copyOf(data, 4))).getInt();
         byte[] res = new byte[desiredLength];
+
         try {
+            String newFIleName = "/mugenimages/"
+                    + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+                    + "_" + Math.random();
+            File fileTemp = new File(newFIleName);
+            FileUtils.writeByteArrayToFile(fileTemp, Arrays.copyOfRange(data, 4, data.length - 4));
+
+            RandomAccessFile file = new RandomAccessFile(newFIleName, "r");
             getBytes(desiredLength, file, res);
 
         } catch (EOFException ex) {
@@ -23,12 +32,14 @@ public class HELP_WITH_LZ5_PLEASE {
         } catch (ArrayIndexOutOfBoundsException ex) {
             System.out.println("ArrayIndexOutOfBoundsException");
             ex.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return res;
     }
 
     private static void getBytes(int desiredLength, RandomAccessFile file, byte[] res) throws IOException {
-        resIndex = 0;
+        int resIndex = 0;
         System.out.println("Start decoding");
         // go throw all file
         while (true) {
@@ -48,7 +59,6 @@ public class HELP_WITH_LZ5_PLEASE {
                     for (int j = 0; j < rlePacket.count; j++)
                         res[resIndex++] = rlePacket.color;
                 }
-
                 // lz package
                 else {
                     Lz5Packet lz5Packet = new Lz5Packet(file);
@@ -56,22 +66,9 @@ public class HELP_WITH_LZ5_PLEASE {
                         byte mybyte = res[resIndex - lz5Packet.offset];
                         res[resIndex++] = mybyte;
                     }
-//                    naivememcpy(res, lz5Packet.offset, lz5Packet.copyLength);
                 }
-
             }
-
-
         }
     }
-
-    private static void naivememcpy(byte[] dst, int offsetIndex, int copyLength) {
-        for (int i = 0; i < copyLength; i++) {
-            byte mybyte = dst[resIndex - offsetIndex];
-            dst[resIndex++] = mybyte;
-        }
-
-    }
-
 }
 
